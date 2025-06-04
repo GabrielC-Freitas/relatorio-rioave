@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Importação de Dados - RIO AVE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .scod-pink {
+            color: #E91E63; /* Exemplo de tom rosa SCOD */
+        }
+        .scod-pink-bg {
+            background-color: #E91E63;
+        }
+        .section-title {
+            border-left: 4px solid #E91E63;
+            padding-left: 12px;
+        }
+        .table-header {
+            background-color: #4A5568; /* Cinza escuro para cabeçalhos de tabela */
+        }
+        .dark-card {
+            background-color: #2D3748; /* Cinza mais escuro para cards */
+            border: 1px solid #4A5568;
+        }
+        .highlight-stat {
+            background-color: #4A5568;
+            padding: 4px 8px; /* Diminuído para caber melhor na tabela */
+            border-radius: 6px;
+            font-weight: bold;
+            color: #F7FAFC; /* Texto claro */
+            display: inline-block;
+        }
+        .icon-style {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        .status-icon-green {
+            color: #48BB78; /* Verde */
+            font-size: 1.5em;
+            margin-right: 0.5rem;
+        }
+        .status-icon-yellow {
+            color: #ECC94B; /* Amarelo */
+            font-size: 1.5em;
+            margin-right: 0.5rem;
+        }
+        /* Adicionando a fonte Inter do Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 leading-relaxed">
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
+
+        <header class="mb-10 text-center">
+            <!-- Logo da SCOD Brasil -->
+            <img src="scod-vermelho-brnco.png" alt="Logo SCOD Brasil" class="mx-auto mb-6 h-20 md:h-24 object-contain">
+            <h1 class="text-4xl font-bold scod-pink mb-2">Relatório de Importação de Dados</h1>
+            <p class="text-xl text-gray-400">Análise e Orientações para RIO AVE</p>
+        </header>
+
+        <section id="introducao_report" class="mb-12 p-6 dark-card rounded-lg">
+            <h2 class="text-2xl font-semibold mb-4 section-title">Contextualização</h2>
+            <p class="mb-3">Durante os processos de importação e integração dos dados enviados pela RIO AVE, nossa equipe identificou algumas dificuldades técnicas relacionadas a inscrições duplicadas. Estes pontos precisam ser ajustados ou validados para garantir o funcionamento adequado tanto em nossa plataforma SCOD quanto na integração com o sistema SIENGE.</p>
+            <p class="mb-3">As planilhas de referência para esta análise são:</p>
+            <ul class="list-disc list-inside ml-4 mb-3 space-y-1 text-gray-400">
+                <li><code class="bg-gray-700 px-1 rounded text-sm">05_importacao_02_06_2025_rioave</code> (utilizada na importação para a plataforma SCOD)</li>
+                <li><code class="bg-gray-700 px-1 rounded text-sm">02_importacao_02_06_2025_rioave_sienge</code> (utilizada para a integração com o sistema SIENGE)</li>
+            </ul>
+            <p>Este relatório detalha as duplicidades encontradas, os impactos e as possíveis ações a serem tomadas.</p>
+        </section>
+
+        <section id="visao_geral_duplicidades" class="mb-12 p-6 dark-card rounded-lg">
+            <h2 class="text-2xl font-semibold mb-4 section-title">
+                <svg class="icon-style inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                Visão Geral das Duplicidades
+            </h2>
+            <p class="mb-3">A presença de inscrições duplicadas impede o processamento correto dos dados em nossos sistemas. Tanto o banco de dados da SCOD quanto o sistema SIENGE não permitem a repetição de chaves primárias como as inscrições imobiliárias e mobiliárias.</p>
+            <p class="mb-4">Abaixo, um resumo das duplicações encontradas nas planilhas fornecidas:</p>
+            <div class="overflow-x-auto bg-gray-800 p-4 rounded-md shadow">
+                <table class="min-w-full text-sm text-left text-gray-300 rounded-md">
+                    <thead class="text-xs text-gray-200 uppercase table-header">
+                        <tr>
+                            <th scope="col" class="px-4 py-3">Coluna Avaliada (Planilha)</th>
+                            <th scope="col" class="px-4 py-3 text-center">Total de Duplicadas Identificadas</th>
+                            <th scope="col" class="px-4 py-3 text-center">Linhas Válidas (Exclusivas) Mantidas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-700 hover:bg-gray-700/50">
+                            <td class="px-4 py-3 font-medium">Inscrição Imobiliária (SCOD: <code class="text-xs bg-gray-600 px-1 rounded">05_...rioave</code>, Col. C)</td>
+                            <td class="px-4 py-3 text-center"><span class="highlight-stat">853</span></td>
+                            <td class="px-4 py-3 text-center"><span class="highlight-stat">564</span></td>
+                        </tr>
+                        <tr class="border-b border-gray-700 hover:bg-gray-700/50">
+                            <td class="px-4 py-3 font-medium">Inscrição Mobiliária (SCOD: <code class="text-xs bg-gray-600 px-1 rounded">05_...rioave</code>, Col. F)</td>
+                            <td class="px-4 py-3 text-center"><span class="highlight-stat">199</span></td>
+                            <td class="px-4 py-3 text-center"><span class="highlight-stat">943</span></td>
+                        </tr>
+                        <tr class="hover:bg-gray-700/50">
+                            <td class="px-4 py-3 font-medium">Inscrição (SIENGE: <code class="text-xs bg-gray-600 px-1 rounded">02_...sienge</code>, Col. C)</td>
+                            <td class="px-4 py-3 text-center"><span class="highlight-stat">853</span></td>
+                            <td class="px-4 py-3 text-center"><span class="highlight-stat">564</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+             <p class="mt-4 text-sm text-gray-400"><em>Nota: "Total de Duplicadas Identificadas" refere-se ao número de linhas que foram consideradas duplicatas e, portanto, não foram mantidas como entradas únicas. "Linhas Válidas Mantidas" são as entradas exclusivas que permaneceram após o tratamento automático de duplicidade pelo sistema.</em></p>
+        </section>
+
+        <section id="principais_pontos" class="mb-12 p-6 dark-card rounded-lg">
+            <h2 class="text-2xl font-semibold mb-4 section-title">
+                <svg class="icon-style inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Principais Pontos Identificados
+            </h2>
+            <ul class="list-disc list-inside ml-4 space-y-2">
+                <li>As duplicações ocorrem principalmente quando as taxas TFO (Taxa de Funcionamento) e TF (Taxa de Foro) compartilham o mesmo código de inscrição.</li>
+                <li>Nosso sistema não permite duplicações nos campos de "Inscrição Imobiliária" e "Inscrição Mobiliária" (planilha SCOD), assim como o sistema SIENGE também não aceita repetições no campo "Inscrição" (planilha SIENGE).</li>
+                <li>Devido a essa restrição sistêmica, ao processar as planilhas, o sistema automaticamente removeu as duplicidades, mantendo apenas as entradas que considerou exclusivas, conforme os números apresentados na tabela acima e evidenciado nos prints e relatórios de importação.</li>
+            </ul>
+        </section>
+
+        <section id="alternativas" class="mb-12 p-6 dark-card rounded-lg">
+            <h2 class="text-2xl font-semibold mb-4 section-title">
+                <svg class="icon-style inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.414-.586H6.714a2 2 0 00-1.414.586l-.286.286a2 2 0 000 2.828l.286.286a2 2 0 001.414.586h11.286a2 2 0 001.414-.586l.286-.286a2 2 0 000-2.828l-.286-.286zM15 4a2 2 0 100 4 2 2 0 000-4zM6 4a2 2 0 100 4 2 2 0 000-4z"></path></svg>
+                Alternativas Possíveis
+            </h2>
+            <p class="mb-4">Considerando o cenário, apresentamos duas alternativas para seguirmos:</p>
+
+            <div class="mb-6 bg-gray-800 p-6 rounded-lg shadow hover:shadow-xl transition-shadow duration-300">
+                <h3 class="text-xl font-medium mb-3 flex items-center"><span class="status-icon-green">🟢</span>1. Validar a Estrutura Atual (sem alterações)</h3>
+                <p class="mb-2 text-gray-300">Apesar das duplicações originais, conseguimos realizar a captura dos dados com base nas informações fornecidas, aplicando a deduplicação automática. Sugerimos que a equipe da RIO AVE analise o resultado dessa importação (os dados já capturados e visíveis na plataforma SCOD) e avalie se o modelo atual atende às necessidades operacionais.</p>
+                <p class="text-gray-300"><strong>Caso positivo</strong>, podemos manter neste formato, e nenhuma ação adicional de correção nas planilhas será necessária neste momento.</p>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-lg shadow hover:shadow-xl transition-shadow duration-300">
+                <h3 class="text-xl font-medium mb-3 flex items-center"><span class="status-icon-yellow">🟡</span>2. Realizar uma Limpeza Manual nas Planilhas (Recomendado)</h3>
+                <p class="mb-3 text-gray-300">Caso entendam que a forma como os dados foram tratados automaticamente (com a simples remoção de duplicatas) não reflete idealmente a estrutura desejada (especialmente a consolidação de múltiplas taxas sob uma única inscrição), recomendamos que a equipe da RIO AVE realize uma limpeza e ajuste direto nas planilhas originais.</p>
+                <p class="mb-4 text-gray-400 text-sm">Esta abordagem garante maior controle sobre como as informações são cadastradas e integradas.</p>
+
+                <h4 class="text-lg font-semibold mb-2 scod-pink">Como ajustar: Planilha SCOD (<code class="text-sm bg-gray-700 px-1 rounded">05_importacao_02_06_2025_rioave</code>)</h4>
+                <ul class="list-disc list-inside ml-4 space-y-2 mb-4 text-gray-300">
+                    <li><strong>Unicidade Obrigatória:</strong> As colunas <strong class="text-yellow-400">"C" (Inscricao Imobiliaria)</strong> e <strong class="text-yellow-400">"F" (Inscricao Mobiliaria)</strong> NÃO PODEM CONTER VALORES REPETIDOS. Cada inscrição deve aparecer uma única vez.</li>
+                    <li><strong>Campos que PODEM repetir:</strong> "Parametro Adicional", "Centro de Custo", "Grupo", "SubGrupo", "Identificador Externo".</li>
+                    <li><strong>Tratamento de Taxas Múltiplas (TFO e TF):</strong> Se as taxas TFO e TF utilizam o mesmo código de inscrição:
+                        <ul class="list-circle list-inside ml-6 mt-1 space-y-1 text-gray-400">
+                            <li>Consolide estas taxas em uma ÚNICA LINHA por inscrição.</li>
+                            <li>Para a inscrição consolidada, marque um <strong class="text-yellow-400">"X"</strong> na coluna <strong class="text-yellow-400">"AB" (Taxa de Foro - TF)</strong> e um <strong class="text-yellow-400">"X"</strong> na coluna <strong class="text-yellow-400">"AC" (TAXA DE FUNCIONAMENTO - TFO)</strong> para indicar que ambas as taxas se aplicam àquela inscrição.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h4 class="text-lg font-semibold mb-2 scod-pink">Como ajustar: Planilha SIENGE (<code class="text-sm bg-gray-700 px-1 rounded">02_importacao_02_06_2025_rioave_sienge</code>)</h4>
+                 <ul class="list-disc list-inside ml-4 space-y-2 text-gray-300">
+                    <li><strong>Unicidade Obrigatória:</strong> Os campos da coluna <strong class="text-yellow-400">"C" (Inscricao)</strong> NÃO PODEM SE REPETIR.</li>
+                    <li><strong>Consolidação de Taxas:</strong> Cada unidade (linha) deve reunir todas as taxas associadas ao mesmo código de inscrição, refletindo a forma como o SIENGE tratará essa inscrição.</li>
+                </ul>
+                <p class="mt-4 text-gray-300"><strong>Resumo da Lógica de Ajuste:</strong> Se múltiplas taxas (ex: TFO e TF) estão associadas a uma mesma inscrição imobiliária/mobiliária, elas devem ser representadas em uma única linha na planilha, com as devidas marcações para cada taxa aplicável, em vez de criar linhas separadas para cada taxa com a mesma inscrição.</p>
+            </div>
+        </section>
+
+        <section id="lembrete_importante" class="mb-12 p-6 dark-card rounded-lg">
+            <h2 class="text-2xl font-semibold mb-4 section-title">
+                <svg class="icon-style inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Lembrete Importante
+            </h2>
+            <p>Relembramos que a restrição quanto à não aceitação de duplicidades nas inscrições sempre foi um ponto explicitamente comunicado e é uma característica sistêmica fundamental para a integridade dos dados em ambas as plataformas (SCOD e SIENGE).</p>
+        </section>
+
+        <section id="atualizacoes_adicionais" class="mb-12 p-6 dark-card rounded-lg">
+            <h2 class="text-2xl font-semibold mb-4 section-title">
+                <svg class="icon-style inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                Informações Adicionais e Atualizações
+            </h2>
+            <div class="mb-6 bg-gray-800 p-4 rounded-md shadow">
+                <h3 class="text-xl font-medium mb-2 scod-pink">Andamento da Tecnologia SCOD</h3>
+                <p>Informamos que o desenvolvimento da nossa tecnologia de captura está em fase final de conclusão. É possível acompanhar o progresso e o que está sendo buscado diretamente através da nossa plataforma.</p>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-md shadow">
+                <h3 class="text-xl font-medium mb-2 scod-pink">Alinhamentos da Integração (Otávio e Denis)</h3>
+                <p>Em recente conversa entre Otávio (SCOD) e Denis (RIO AVE), foram alinhados os seguintes pontos referentes à integração:</p>
+                <ul class="list-disc list-inside ml-4 space-y-1 text-gray-400">
+                    <li><strong>Código da Unidade:</strong> Encontramos uma solução e definimos o modo de envio para o código da unidade; este ponto foi solucionado.</li>
+                    <li><strong>Nova Rota da Unidade:</strong> Foi combinado o prazo de 1 (um) dia útil para a implementação de uma nova rota para a unidade, visto que a rota anteriormente criada não atendia completamente aos requisitos.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="conclusao" class="text-center mt-12 p-6 dark-card rounded-lg">
+            <h2 class="text-2xl font-semibold mb-4">Próximos Passos e Considerações</h2>
+            <p class="mb-3">Caso validem que o formato atual dos dados na plataforma (com a deduplicação automática realizada por nós) já atende às necessidades, podemos seguir normalmente.</p>
+            <p class="mb-3">Se optarem por ajustar e reenviar as planilhas com base nas orientações da "Alternativa 2" (limpeza manual), fiquem à vontade para fazê-lo no tempo que for mais conveniente para a RIO AVE. A nova atualização dos dados poderá ser feita via integração. É importante notar que, sem esse tratamento prévio e mais detalhado de consolidação, pode ser um pouco mais difícil localizar e correlacionar todas as taxas de uma mesma inscrição diretamente pela plataforma.</p>
+            <p class="mb-4">Contamos com a análise e decisão da RIO AVE para darmos os próximos passos da forma mais eficiente.</p>
+            <p>Permanecemos à disposição para quaisquer esclarecimentos ou apoio que precisarem.</p>
+            <p class="mt-6 font-semibold">Atenciosamente,</p>
+            <p class="scod-pink">Equipe SCOD Brasil</p>
+        </section>
+
+        <footer class="text-center mt-12 py-6 border-t border-gray-700">
+            <p class="text-sm text-gray-500">&copy; <script>document.write(new Date().getFullYear())</script> SCOD Brasil. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+</body>
+</html>
